@@ -161,7 +161,7 @@ number:
     set_action:
       - lambda: |-
           set_eq_band(0, x);
-          if (!id(eq_preset_writing) && id(eq_preset).state != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
+          if (!id(eq_preset_writing) && id(eq_preset).current_option() != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
   - platform: template
     name: "${friendly_name} EQ 40Hz"
     id: eq_band_1
@@ -174,7 +174,7 @@ number:
     set_action:
       - lambda: |-
           set_eq_band(1, x);
-          if (!id(eq_preset_writing) && id(eq_preset).state != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
+          if (!id(eq_preset_writing) && id(eq_preset).current_option() != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
   - platform: template
     name: "${friendly_name} EQ 63Hz"
     id: eq_band_2
@@ -187,7 +187,7 @@ number:
     set_action:
       - lambda: |-
           set_eq_band(2, x);
-          if (!id(eq_preset_writing) && id(eq_preset).state != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
+          if (!id(eq_preset_writing) && id(eq_preset).current_option() != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
   - platform: template
     name: "${friendly_name} EQ 100Hz"
     id: eq_band_3
@@ -200,7 +200,7 @@ number:
     set_action:
       - lambda: |-
           set_eq_band(3, x);
-          if (!id(eq_preset_writing) && id(eq_preset).state != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
+          if (!id(eq_preset_writing) && id(eq_preset).current_option() != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
   - platform: template
     name: "${friendly_name} EQ 160Hz"
     id: eq_band_4
@@ -213,7 +213,7 @@ number:
     set_action:
       - lambda: |-
           set_eq_band(4, x);
-          if (!id(eq_preset_writing) && id(eq_preset).state != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
+          if (!id(eq_preset_writing) && id(eq_preset).current_option() != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
   - platform: template
     name: "${friendly_name} EQ 250Hz"
     id: eq_band_5
@@ -226,7 +226,7 @@ number:
     set_action:
       - lambda: |-
           set_eq_band(5, x);
-          if (!id(eq_preset_writing) && id(eq_preset).state != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
+          if (!id(eq_preset_writing) && id(eq_preset).current_option() != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
   - platform: template
     name: "${friendly_name} EQ 400Hz"
     id: eq_band_6
@@ -239,7 +239,7 @@ number:
     set_action:
       - lambda: |-
           set_eq_band(6, x);
-          if (!id(eq_preset_writing) && id(eq_preset).state != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
+          if (!id(eq_preset_writing) && id(eq_preset).current_option() != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
   - platform: template
     name: "${friendly_name} EQ 630Hz"
     id: eq_band_7
@@ -252,7 +252,7 @@ number:
     set_action:
       - lambda: |-
           set_eq_band(7, x);
-          if (!id(eq_preset_writing) && id(eq_preset).state != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
+          if (!id(eq_preset_writing) && id(eq_preset).current_option() != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
   - platform: template
     name: "${friendly_name} EQ 1kHz"
     id: eq_band_8
@@ -265,7 +265,7 @@ number:
     set_action:
       - lambda: |-
           set_eq_band(8, x);
-          if (!id(eq_preset_writing) && id(eq_preset).state != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
+          if (!id(eq_preset_writing) && id(eq_preset).current_option() != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
   - platform: template
     name: "${friendly_name} EQ 1.6kHz"
     id: eq_band_9
@@ -278,7 +278,7 @@ number:
     set_action:
       - lambda: |-
           set_eq_band(9, x);
-          if (!id(eq_preset_writing) && id(eq_preset).state != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
+          if (!id(eq_preset_writing) && id(eq_preset).current_option() != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
   - platform: template
     name: "${friendly_name} EQ 2.5kHz"
     id: eq_band_10
@@ -291,7 +291,7 @@ number:
     set_action:
       - lambda: |-
           set_eq_band(10, x);
-          if (!id(eq_preset_writing) && id(eq_preset).state != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
+          if (!id(eq_preset_writing) && id(eq_preset).current_option() != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
   - platform: template
     name: "${friendly_name} EQ 4kHz"
     id: eq_band_11
@@ -304,7 +304,7 @@ number:
     set_action:
       - lambda: |-
           set_eq_band(11, x);
-          if (!id(eq_preset_writing) && id(eq_preset).state != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
+          if (!id(eq_preset_writing) && id(eq_preset).current_option() != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
   - platform: template
     name: "${friendly_name} EQ 6.3kHz"
     id: eq_band_12
@@ -317,7 +317,7 @@ number:
     set_action:
       - lambda: |-
           set_eq_band(12, x);
-          if (!id(eq_preset_writing) && id(eq_preset).state != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
+          if (!id(eq_preset_writing) && id(eq_preset).current_option() != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
   - platform: template
     name: "${friendly_name} EQ 10kHz"
     id: eq_band_13
@@ -330,7 +330,7 @@ number:
     set_action:
       - lambda: |-
           set_eq_band(13, x);
-          if (!id(eq_preset_writing) && id(eq_preset).state != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
+          if (!id(eq_preset_writing) && id(eq_preset).current_option() != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
   - platform: template
     name: "${friendly_name} EQ 16kHz"
     id: eq_band_14
@@ -343,4 +343,4 @@ number:
     set_action:
       - lambda: |-
           set_eq_band(14, x);
-          if (!id(eq_preset_writing) && id(eq_preset).state != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
+          if (!id(eq_preset_writing) && id(eq_preset).current_option() != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
