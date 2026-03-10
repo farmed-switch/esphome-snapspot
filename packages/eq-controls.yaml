@@ -22,7 +22,18 @@
 #
 # EQ PRESET — only applies to Software EQ mode.
 # EQ BAND SLIDERS — 15 sliders (band 0..14), ISO 2/3-octave.
+#   Sliders save to NVS via restore_value: true.
+#   Moving a slider manually automatically shows "Custom" in the preset.
 # ─────────────────────────────────────────────────────────────────────────────
+
+globals:
+  # Guard: set to true while a preset is writing values to the sliders.
+  # Prevents sliders' set_action from overwriting eq_preset back to "Custom"
+  # during a preset application (which would create a feedback loop).
+  - id: eq_preset_writing
+    type: bool
+    restore_value: false
+    initial_value: 'false'
 
 select:
   # ── DSP Mode ─────────────────────────────────────────────────────────────
@@ -66,10 +77,68 @@ select:
       - "Custom"
     initial_option: "Flat (Bypass)"
     set_action:
-      - lambda: 'apply_eq_preset(x.c_str());'
+      - lambda: |-
+          // Preset gains for 15-band ISO (index 0=25Hz .. 14=16kHz).
+          // Writing to each slider triggers set_eq_band() + NVS save automatically.
+          float g[15] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+          bool bypass = false;
+
+          if (x == "Flat (Bypass)") {
+            bypass = true;
+          } else if (x == "Flat (Full Range)") {
+            // all 0 dB, EQ enabled — keep g[] as zeros
+          } else if (x == "Subwoofer") {
+            float v[] = {10,9,7,5,3,1,-2,-6,-10,-13,-14,-15,-15,-15,-15};
+            memcpy(g, v, sizeof(v));
+          } else if (x == "Bookshelf") {
+            float v[] = {3,4,4,3,2,1,0,0,0,0,0,0,1,1,2};
+            memcpy(g, v, sizeof(v));
+          } else if (x == "Floor Standing") {
+            float v[] = {2,2,2,1,1,0,0,0,0,0,-1,-1,0,0,1};
+            memcpy(g, v, sizeof(v));
+          } else if (x == "Near Field") {
+            float v[] = {-1,-1,0,0,0,0,0,0,0,0,0,0,0,1,0};
+            memcpy(g, v, sizeof(v));
+          } else if (x == "Small/Portable") {
+            float v[] = {-10,-8,-6,-4,-2,0,1,2,2,2,3,3,4,4,5};
+            memcpy(g, v, sizeof(v));
+          } else {
+            // "Custom" — don't touch sliders, just ensure EQ is on
+            if (id(dsp_mode).state == "Software EQ 15-band") enable_eq(true);
+            return;
+          }
+
+          // Guard: prevent sliders from setting preset back to "Custom"
+          id(eq_preset_writing) = true;
+
+          // Write each slider — triggers set_eq_band() and saves to NVS
+          id(eq_band_0).make_call().set_value(g[0]).perform();
+          id(eq_band_1).make_call().set_value(g[1]).perform();
+          id(eq_band_2).make_call().set_value(g[2]).perform();
+          id(eq_band_3).make_call().set_value(g[3]).perform();
+          id(eq_band_4).make_call().set_value(g[4]).perform();
+          id(eq_band_5).make_call().set_value(g[5]).perform();
+          id(eq_band_6).make_call().set_value(g[6]).perform();
+          id(eq_band_7).make_call().set_value(g[7]).perform();
+          id(eq_band_8).make_call().set_value(g[8]).perform();
+          id(eq_band_9).make_call().set_value(g[9]).perform();
+          id(eq_band_10).make_call().set_value(g[10]).perform();
+          id(eq_band_11).make_call().set_value(g[11]).perform();
+          id(eq_band_12).make_call().set_value(g[12]).perform();
+          id(eq_band_13).make_call().set_value(g[13]).perform();
+          id(eq_band_14).make_call().set_value(g[14]).perform();
+
+          id(eq_preset_writing) = false;
+
+          // Enable or bypass EQ based on preset
+          if (id(dsp_mode).state == "Software EQ 15-band") {
+            enable_eq(!bypass);
+          }
 
 number:
   # ── ISO 2/3-octave 15-band sliders (band index 0–14) ─────────────────────
+  # Each slider saves its value to NVS (restore_value: true) and calls
+  # set_eq_band() directly. Moving a slider manually sets preset to "Custom".
   - platform: template
     name: "${friendly_name} EQ 25Hz"
     id: eq_band_0
@@ -80,7 +149,9 @@ number:
     optimistic: true
     restore_value: true
     set_action:
-      - lambda: 'set_eq_band(0, x);'
+      - lambda: |-
+          set_eq_band(0, x);
+          if (!id(eq_preset_writing) && id(eq_preset).state != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
   - platform: template
     name: "${friendly_name} EQ 40Hz"
     id: eq_band_1
@@ -91,7 +162,9 @@ number:
     optimistic: true
     restore_value: true
     set_action:
-      - lambda: 'set_eq_band(1, x);'
+      - lambda: |-
+          set_eq_band(1, x);
+          if (!id(eq_preset_writing) && id(eq_preset).state != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
   - platform: template
     name: "${friendly_name} EQ 63Hz"
     id: eq_band_2
@@ -102,7 +175,9 @@ number:
     optimistic: true
     restore_value: true
     set_action:
-      - lambda: 'set_eq_band(2, x);'
+      - lambda: |-
+          set_eq_band(2, x);
+          if (!id(eq_preset_writing) && id(eq_preset).state != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
   - platform: template
     name: "${friendly_name} EQ 100Hz"
     id: eq_band_3
@@ -113,7 +188,9 @@ number:
     optimistic: true
     restore_value: true
     set_action:
-      - lambda: 'set_eq_band(3, x);'
+      - lambda: |-
+          set_eq_band(3, x);
+          if (!id(eq_preset_writing) && id(eq_preset).state != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
   - platform: template
     name: "${friendly_name} EQ 160Hz"
     id: eq_band_4
@@ -124,7 +201,9 @@ number:
     optimistic: true
     restore_value: true
     set_action:
-      - lambda: 'set_eq_band(4, x);'
+      - lambda: |-
+          set_eq_band(4, x);
+          if (!id(eq_preset_writing) && id(eq_preset).state != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
   - platform: template
     name: "${friendly_name} EQ 250Hz"
     id: eq_band_5
@@ -135,7 +214,9 @@ number:
     optimistic: true
     restore_value: true
     set_action:
-      - lambda: 'set_eq_band(5, x);'
+      - lambda: |-
+          set_eq_band(5, x);
+          if (!id(eq_preset_writing) && id(eq_preset).state != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
   - platform: template
     name: "${friendly_name} EQ 400Hz"
     id: eq_band_6
@@ -146,7 +227,9 @@ number:
     optimistic: true
     restore_value: true
     set_action:
-      - lambda: 'set_eq_band(6, x);'
+      - lambda: |-
+          set_eq_band(6, x);
+          if (!id(eq_preset_writing) && id(eq_preset).state != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
   - platform: template
     name: "${friendly_name} EQ 630Hz"
     id: eq_band_7
@@ -157,7 +240,9 @@ number:
     optimistic: true
     restore_value: true
     set_action:
-      - lambda: 'set_eq_band(7, x);'
+      - lambda: |-
+          set_eq_band(7, x);
+          if (!id(eq_preset_writing) && id(eq_preset).state != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
   - platform: template
     name: "${friendly_name} EQ 1kHz"
     id: eq_band_8
@@ -168,7 +253,9 @@ number:
     optimistic: true
     restore_value: true
     set_action:
-      - lambda: 'set_eq_band(8, x);'
+      - lambda: |-
+          set_eq_band(8, x);
+          if (!id(eq_preset_writing) && id(eq_preset).state != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
   - platform: template
     name: "${friendly_name} EQ 1.6kHz"
     id: eq_band_9
@@ -179,7 +266,9 @@ number:
     optimistic: true
     restore_value: true
     set_action:
-      - lambda: 'set_eq_band(9, x);'
+      - lambda: |-
+          set_eq_band(9, x);
+          if (!id(eq_preset_writing) && id(eq_preset).state != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
   - platform: template
     name: "${friendly_name} EQ 2.5kHz"
     id: eq_band_10
@@ -190,7 +279,9 @@ number:
     optimistic: true
     restore_value: true
     set_action:
-      - lambda: 'set_eq_band(10, x);'
+      - lambda: |-
+          set_eq_band(10, x);
+          if (!id(eq_preset_writing) && id(eq_preset).state != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
   - platform: template
     name: "${friendly_name} EQ 4kHz"
     id: eq_band_11
@@ -201,7 +292,9 @@ number:
     optimistic: true
     restore_value: true
     set_action:
-      - lambda: 'set_eq_band(11, x);'
+      - lambda: |-
+          set_eq_band(11, x);
+          if (!id(eq_preset_writing) && id(eq_preset).state != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
   - platform: template
     name: "${friendly_name} EQ 6.3kHz"
     id: eq_band_12
@@ -212,7 +305,9 @@ number:
     optimistic: true
     restore_value: true
     set_action:
-      - lambda: 'set_eq_band(12, x);'
+      - lambda: |-
+          set_eq_band(12, x);
+          if (!id(eq_preset_writing) && id(eq_preset).state != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
   - platform: template
     name: "${friendly_name} EQ 10kHz"
     id: eq_band_13
@@ -223,7 +318,9 @@ number:
     optimistic: true
     restore_value: true
     set_action:
-      - lambda: 'set_eq_band(13, x);'
+      - lambda: |-
+          set_eq_band(13, x);
+          if (!id(eq_preset_writing) && id(eq_preset).state != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
   - platform: template
     name: "${friendly_name} EQ 16kHz"
     id: eq_band_14
@@ -234,4 +331,6 @@ number:
     optimistic: true
     restore_value: true
     set_action:
-      - lambda: 'set_eq_band(14, x);'
+      - lambda: |-
+          set_eq_band(14, x);
+          if (!id(eq_preset_writing) && id(eq_preset).state != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
