@@ -46,6 +46,24 @@ esphome:
         - lambda: |-
             if (id(sw_eq_switch).state) {
               eq_set_mode(15);
+              // Re-apply all 15 band gains from NVS-restored slider values.
+              // ESPHome does NOT call set_action on number restore, so C++ gain_db[]
+              // would be all-zero after reboot (active preset values lost).
+              set_eq_band(0,  id(eq_band_0).state);
+              set_eq_band(1,  id(eq_band_1).state);
+              set_eq_band(2,  id(eq_band_2).state);
+              set_eq_band(3,  id(eq_band_3).state);
+              set_eq_band(4,  id(eq_band_4).state);
+              set_eq_band(5,  id(eq_band_5).state);
+              set_eq_band(6,  id(eq_band_6).state);
+              set_eq_band(7,  id(eq_band_7).state);
+              set_eq_band(8,  id(eq_band_8).state);
+              set_eq_band(9,  id(eq_band_9).state);
+              set_eq_band(10, id(eq_band_10).state);
+              set_eq_band(11, id(eq_band_11).state);
+              set_eq_band(12, id(eq_band_12).state);
+              set_eq_band(13, id(eq_band_13).state);
+              set_eq_band(14, id(eq_band_14).state);
               enable_eq(true);
             } else {
               enable_eq(false);
@@ -58,6 +76,7 @@ switch:
     id: sw_eq_switch
     restore_mode: RESTORE_DEFAULT_OFF
     optimistic: true
+    entity_category: config
     turn_on_action:
       - lambda: |-
           eq_set_mode(15);
@@ -72,6 +91,7 @@ select:
     name: "${friendly_name} EQ Preset"
     id: eq_preset
     restore_value: true
+    entity_category: config
     options:
       - "Flat (Bypass)"
       - "Flat (Full Range)"
@@ -158,6 +178,7 @@ number:
     initial_value: 0
     optimistic: true
     restore_value: true
+    entity_category: config
     set_action:
       - lambda: |-
           set_eq_band(0, x);
@@ -171,6 +192,7 @@ number:
     initial_value: 0
     optimistic: true
     restore_value: true
+    entity_category: config
     set_action:
       - lambda: |-
           set_eq_band(1, x);
@@ -184,6 +206,7 @@ number:
     initial_value: 0
     optimistic: true
     restore_value: true
+    entity_category: config
     set_action:
       - lambda: |-
           set_eq_band(2, x);
@@ -197,6 +220,7 @@ number:
     initial_value: 0
     optimistic: true
     restore_value: true
+    entity_category: config
     set_action:
       - lambda: |-
           set_eq_band(3, x);
@@ -210,6 +234,7 @@ number:
     initial_value: 0
     optimistic: true
     restore_value: true
+    entity_category: config
     set_action:
       - lambda: |-
           set_eq_band(4, x);
@@ -223,6 +248,7 @@ number:
     initial_value: 0
     optimistic: true
     restore_value: true
+    entity_category: config
     set_action:
       - lambda: |-
           set_eq_band(5, x);
@@ -236,6 +262,7 @@ number:
     initial_value: 0
     optimistic: true
     restore_value: true
+    entity_category: config
     set_action:
       - lambda: |-
           set_eq_band(6, x);
@@ -249,6 +276,7 @@ number:
     initial_value: 0
     optimistic: true
     restore_value: true
+    entity_category: config
     set_action:
       - lambda: |-
           set_eq_band(7, x);
@@ -262,6 +290,7 @@ number:
     initial_value: 0
     optimistic: true
     restore_value: true
+    entity_category: config
     set_action:
       - lambda: |-
           set_eq_band(8, x);
@@ -275,6 +304,7 @@ number:
     initial_value: 0
     optimistic: true
     restore_value: true
+    entity_category: config
     set_action:
       - lambda: |-
           set_eq_band(9, x);
@@ -288,6 +318,7 @@ number:
     initial_value: 0
     optimistic: true
     restore_value: true
+    entity_category: config
     set_action:
       - lambda: |-
           set_eq_band(10, x);
@@ -301,6 +332,7 @@ number:
     initial_value: 0
     optimistic: true
     restore_value: true
+    entity_category: config
     set_action:
       - lambda: |-
           set_eq_band(11, x);
@@ -314,6 +346,7 @@ number:
     initial_value: 0
     optimistic: true
     restore_value: true
+    entity_category: config
     set_action:
       - lambda: |-
           set_eq_band(12, x);
@@ -327,6 +360,7 @@ number:
     initial_value: 0
     optimistic: true
     restore_value: true
+    entity_category: config
     set_action:
       - lambda: |-
           set_eq_band(13, x);
@@ -340,6 +374,7 @@ number:
     initial_value: 0
     optimistic: true
     restore_value: true
+    entity_category: config
     set_action:
       - lambda: |-
           set_eq_band(14, x);
