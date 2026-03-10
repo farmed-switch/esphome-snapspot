@@ -130,9 +130,22 @@ select:
 
           id(eq_preset_writing) = false;
 
-          // Enable or bypass EQ based on preset
-          if (id(dsp_mode).state == "Software EQ 15-band") {
-            enable_eq(!bypass);
+          // Auto-switch DSP Mode:
+          // - Any non-bypass preset → activate Software EQ if not already active
+          // - "Flat (Bypass)" → turn EQ off
+          if (bypass) {
+            // Turn off software EQ (leave DSP mode as-is, just disable processing)
+            enable_eq(false);
+            if (id(dsp_mode).state == "Software EQ 15-band") {
+              id(dsp_mode).make_call().set_option("Off").perform();
+            }
+          } else {
+            // Activate software EQ regardless of current DSP mode
+            if (id(dsp_mode).state != "Software EQ 15-band") {
+              id(dsp_mode).make_call().set_option("Software EQ 15-band").perform();
+            } else {
+              enable_eq(true);
+            }
           }
 
 number:
