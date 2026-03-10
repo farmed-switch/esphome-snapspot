@@ -150,7 +150,7 @@ number:
   # Each slider saves its value to NVS (restore_value: true) and calls
   # set_eq_band() directly. Moving a slider manually sets preset to "Custom".
   - platform: template
-    name: "${friendly_name} EQ 25Hz"
+    name: "${friendly_name} EQ 00025Hz"
     id: eq_band_0
     min_value: -15
     max_value: 15
@@ -163,7 +163,7 @@ number:
           set_eq_band(0, x);
           if (!id(eq_preset_writing) && id(eq_preset).current_option() != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
   - platform: template
-    name: "${friendly_name} EQ 40Hz"
+    name: "${friendly_name} EQ 00040Hz"
     id: eq_band_1
     min_value: -15
     max_value: 15
@@ -176,7 +176,7 @@ number:
           set_eq_band(1, x);
           if (!id(eq_preset_writing) && id(eq_preset).current_option() != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
   - platform: template
-    name: "${friendly_name} EQ 63Hz"
+    name: "${friendly_name} EQ 00063Hz"
     id: eq_band_2
     min_value: -15
     max_value: 15
@@ -189,7 +189,7 @@ number:
           set_eq_band(2, x);
           if (!id(eq_preset_writing) && id(eq_preset).current_option() != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
   - platform: template
-    name: "${friendly_name} EQ 100Hz"
+    name: "${friendly_name} EQ 00100Hz"
     id: eq_band_3
     min_value: -15
     max_value: 15
@@ -202,7 +202,7 @@ number:
           set_eq_band(3, x);
           if (!id(eq_preset_writing) && id(eq_preset).current_option() != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
   - platform: template
-    name: "${friendly_name} EQ 160Hz"
+    name: "${friendly_name} EQ 00160Hz"
     id: eq_band_4
     min_value: -15
     max_value: 15
@@ -215,7 +215,7 @@ number:
           set_eq_band(4, x);
           if (!id(eq_preset_writing) && id(eq_preset).current_option() != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
   - platform: template
-    name: "${friendly_name} EQ 250Hz"
+    name: "${friendly_name} EQ 00250Hz"
     id: eq_band_5
     min_value: -15
     max_value: 15
@@ -228,7 +228,7 @@ number:
           set_eq_band(5, x);
           if (!id(eq_preset_writing) && id(eq_preset).current_option() != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
   - platform: template
-    name: "${friendly_name} EQ 400Hz"
+    name: "${friendly_name} EQ 00400Hz"
     id: eq_band_6
     min_value: -15
     max_value: 15
@@ -241,7 +241,7 @@ number:
           set_eq_band(6, x);
           if (!id(eq_preset_writing) && id(eq_preset).current_option() != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
   - platform: template
-    name: "${friendly_name} EQ 630Hz"
+    name: "${friendly_name} EQ 00630Hz"
     id: eq_band_7
     min_value: -15
     max_value: 15
@@ -254,7 +254,7 @@ number:
           set_eq_band(7, x);
           if (!id(eq_preset_writing) && id(eq_preset).current_option() != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
   - platform: template
-    name: "${friendly_name} EQ 1kHz"
+    name: "${friendly_name} EQ 01000Hz"
     id: eq_band_8
     min_value: -15
     max_value: 15
@@ -267,7 +267,7 @@ number:
           set_eq_band(8, x);
           if (!id(eq_preset_writing) && id(eq_preset).current_option() != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
   - platform: template
-    name: "${friendly_name} EQ 1.6kHz"
+    name: "${friendly_name} EQ 01600Hz"
     id: eq_band_9
     min_value: -15
     max_value: 15
@@ -280,7 +280,7 @@ number:
           set_eq_band(9, x);
           if (!id(eq_preset_writing) && id(eq_preset).current_option() != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
   - platform: template
-    name: "${friendly_name} EQ 2.5kHz"
+    name: "${friendly_name} EQ 02500Hz"
     id: eq_band_10
     min_value: -15
     max_value: 15
@@ -293,7 +293,7 @@ number:
           set_eq_band(10, x);
           if (!id(eq_preset_writing) && id(eq_preset).current_option() != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
   - platform: template
-    name: "${friendly_name} EQ 4kHz"
+    name: "${friendly_name} EQ 04000Hz"
     id: eq_band_11
     min_value: -15
     max_value: 15
@@ -306,7 +306,7 @@ number:
           set_eq_band(11, x);
           if (!id(eq_preset_writing) && id(eq_preset).current_option() != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
   - platform: template
-    name: "${friendly_name} EQ 6.3kHz"
+    name: "${friendly_name} EQ 06300Hz"
     id: eq_band_12
     min_value: -15
     max_value: 15
@@ -319,7 +319,7 @@ number:
           set_eq_band(12, x);
           if (!id(eq_preset_writing) && id(eq_preset).current_option() != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
   - platform: template
-    name: "${friendly_name} EQ 10kHz"
+    name: "${friendly_name} EQ 10000Hz"
     id: eq_band_13
     min_value: -15
     max_value: 15
@@ -332,7 +332,7 @@ number:
           set_eq_band(13, x);
           if (!id(eq_preset_writing) && id(eq_preset).current_option() != "Custom") id(eq_preset).make_call().set_option("Custom").perform();
   - platform: template
-    name: "${friendly_name} EQ 16kHz"
+    name: "${friendly_name} EQ 16000Hz"
     id: eq_band_14
     min_value: -15
     max_value: 15
