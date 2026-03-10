@@ -90,7 +90,7 @@ select:
   - platform: template
     name: "${friendly_name} EQ Preset"
     id: eq_preset
-    restore_value: true
+    restore_value: false
     entity_category: config
     options:
       - "Flat (Bypass)"
@@ -101,7 +101,7 @@ select:
       - "Near Field"
       - "Small/Portable"
       - "Custom"
-    initial_option: "Flat (Bypass)"
+    initial_option: "Custom"
     set_action:
       - lambda: |-
           // Preset gains for 15-band ISO (index 0=25Hz .. 14=16kHz).
