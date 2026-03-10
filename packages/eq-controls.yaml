@@ -1,0 +1,237 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# packages/eq-controls.yaml
+#
+# Shared EQ controls package — include via:
+#
+#   packages:
+#     eq_controls: github://farmed-switch/esphome-snapspots-dev/packages/eq-controls.yaml@main
+#
+# REQUIREMENTS in your device YAML:
+#   - shared_audio: block present (activates the software EQ library)
+#   - A switch with  id: hw_eq_switch  and  internal: true  (e.g. TAS5805M enable_eq)
+#     The switch must exist for the DSP Mode lambda to compile, but should be
+#     hidden from HA (internal: true) since the dropdown controls it exclusively.
+#   - substitutions.friendly_name defined
+#
+# DSP MODE BEHAVIOUR:
+#   "Off"                — both SW and HW EQ disabled
+#   "Software EQ 15-band"— ISO 2/3-octave 15-band running on ESP32 CPU
+#                         (frequencies: 25 40 63 100 160 250 400 630 1k
+#                          1.6k 2.5k 4k 6.3k 10k 16kHz, Q=1.4)
+#   "Hardware DSP"       — TAS5805M on-chip EQ activated, SW EQ disabled
+#
+# EQ PRESET — only applies to Software EQ mode.
+# EQ BAND SLIDERS — 15 sliders (band 0..14), ISO 2/3-octave.
+# ─────────────────────────────────────────────────────────────────────────────
+
+select:
+  # ── DSP Mode ─────────────────────────────────────────────────────────────
+  - platform: template
+    name: "${friendly_name} DSP Mode"
+    id: dsp_mode
+    options:
+      - "Off"
+      - "Software EQ 15-band"
+      - "Hardware DSP"
+    initial_option: "Off"
+    restore_value: true
+    set_action:
+      - lambda: |-
+          if (x == "Software EQ 15-band") {
+            id(hw_eq_switch).turn_off();
+            eq_set_mode(15);
+            enable_eq(true);
+          } else if (x == "Hardware DSP") {
+            enable_eq(false);
+            id(hw_eq_switch).turn_on();
+          } else {
+            // "Off": disable both
+            enable_eq(false);
+            id(hw_eq_switch).turn_off();
+          }
+
+  # ── EQ Preset (Software EQ only) ─────────────────────────────────────────
+  - platform: template
+    name: "${friendly_name} EQ Preset"
+    id: eq_preset
+    restore_value: true
+    options:
+      - "Flat (Bypass)"
+      - "Flat (Full Range)"
+      - "Subwoofer"
+      - "Bookshelf"
+      - "Floor Standing"
+      - "Near Field"
+      - "Small/Portable"
+      - "Custom"
+    initial_option: "Flat (Bypass)"
+    set_action:
+      - lambda: 'apply_eq_preset(x.c_str());'
+
+number:
+  # ── ISO 2/3-octave 15-band sliders (band index 0–14) ─────────────────────
+  - platform: template
+    name: "${friendly_name} EQ 25Hz"
+    id: eq_band_0
+    min_value: -15
+    max_value: 15
+    step: 0.5
+    initial_value: 0
+    optimistic: true
+    restore_value: true
+    set_action:
+      - lambda: 'set_eq_band(0, x);'
+  - platform: template
+    name: "${friendly_name} EQ 40Hz"
+    id: eq_band_1
+    min_value: -15
+    max_value: 15
+    step: 0.5
+    initial_value: 0
+    optimistic: true
+    restore_value: true
+    set_action:
+      - lambda: 'set_eq_band(1, x);'
+  - platform: template
+    name: "${friendly_name} EQ 63Hz"
+    id: eq_band_2
+    min_value: -15
+    max_value: 15
+    step: 0.5
+    initial_value: 0
+    optimistic: true
+    restore_value: true
+    set_action:
+      - lambda: 'set_eq_band(2, x);'
+  - platform: template
+    name: "${friendly_name} EQ 100Hz"
+    id: eq_band_3
+    min_value: -15
+    max_value: 15
+    step: 0.5
+    initial_value: 0
+    optimistic: true
+    restore_value: true
+    set_action:
+      - lambda: 'set_eq_band(3, x);'
+  - platform: template
+    name: "${friendly_name} EQ 160Hz"
+    id: eq_band_4
+    min_value: -15
+    max_value: 15
+    step: 0.5
+    initial_value: 0
+    optimistic: true
+    restore_value: true
+    set_action:
+      - lambda: 'set_eq_band(4, x);'
+  - platform: template
+    name: "${friendly_name} EQ 250Hz"
+    id: eq_band_5
+    min_value: -15
+    max_value: 15
+    step: 0.5
+    initial_value: 0
+    optimistic: true
+    restore_value: true
+    set_action:
+      - lambda: 'set_eq_band(5, x);'
+  - platform: template
+    name: "${friendly_name} EQ 400Hz"
+    id: eq_band_6
+    min_value: -15
+    max_value: 15
+    step: 0.5
+    initial_value: 0
+    optimistic: true
+    restore_value: true
+    set_action:
+      - lambda: 'set_eq_band(6, x);'
+  - platform: template
+    name: "${friendly_name} EQ 630Hz"
+    id: eq_band_7
+    min_value: -15
+    max_value: 15
+    step: 0.5
+    initial_value: 0
+    optimistic: true
+    restore_value: true
+    set_action:
+      - lambda: 'set_eq_band(7, x);'
+  - platform: template
+    name: "${friendly_name} EQ 1kHz"
+    id: eq_band_8
+    min_value: -15
+    max_value: 15
+    step: 0.5
+    initial_value: 0
+    optimistic: true
+    restore_value: true
+    set_action:
+      - lambda: 'set_eq_band(8, x);'
+  - platform: template
+    name: "${friendly_name} EQ 1.6kHz"
+    id: eq_band_9
+    min_value: -15
+    max_value: 15
+    step: 0.5
+    initial_value: 0
+    optimistic: true
+    restore_value: true
+    set_action:
+      - lambda: 'set_eq_band(9, x);'
+  - platform: template
+    name: "${friendly_name} EQ 2.5kHz"
+    id: eq_band_10
+    min_value: -15
+    max_value: 15
+    step: 0.5
+    initial_value: 0
+    optimistic: true
+    restore_value: true
+    set_action:
+      - lambda: 'set_eq_band(10, x);'
+  - platform: template
+    name: "${friendly_name} EQ 4kHz"
+    id: eq_band_11
+    min_value: -15
+    max_value: 15
+    step: 0.5
+    initial_value: 0
+    optimistic: true
+    restore_value: true
+    set_action:
+      - lambda: 'set_eq_band(11, x);'
+  - platform: template
+    name: "${friendly_name} EQ 6.3kHz"
+    id: eq_band_12
+    min_value: -15
+    max_value: 15
+    step: 0.5
+    initial_value: 0
+    optimistic: true
+    restore_value: true
+    set_action:
+      - lambda: 'set_eq_band(12, x);'
+  - platform: template
+    name: "${friendly_name} EQ 10kHz"
+    id: eq_band_13
+    min_value: -15
+    max_value: 15
+    step: 0.5
+    initial_value: 0
+    optimistic: true
+    restore_value: true
+    set_action:
+      - lambda: 'set_eq_band(13, x);'
+  - platform: template
+    name: "${friendly_name} EQ 16kHz"
+    id: eq_band_14
+    min_value: -15
+    max_value: 15
+    step: 0.5
+    initial_value: 0
+    optimistic: true
+    restore_value: true
+    set_action:
+      - lambda: 'set_eq_band(14, x);'
