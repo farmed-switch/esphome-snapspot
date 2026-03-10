@@ -4,7 +4,7 @@
 # Shared EQ controls package — include via:
 #
 #   packages:
-#     eq_controls: github://farmed-switch/esphome-snapspots-dev/packages/eq-controls.yaml@main
+#     eq_controls: github://farmed-switch/esphome-snapspot/packages/eq-controls.yaml@main
 #
 # REQUIREMENTS in your device YAML:
 #   - shared_audio: block present (activates the software EQ library)
