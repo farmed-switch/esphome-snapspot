@@ -8,17 +8,16 @@
 #
 # REQUIREMENTS in your device YAML:
 #   - shared_audio: block present (activates the software EQ library)
-#   - A switch with  id: hw_eq_switch  and  internal: true  (e.g. TAS5805M enable_eq)
-#     The switch must exist for the DSP Mode lambda to compile, but should be
-#     hidden from HA (internal: true) since the dropdown controls it exclusively.
 #   - substitutions.friendly_name defined
 #
-# DSP MODE BEHAVIOUR:
-#   "Off"                — both SW and HW EQ disabled
-#   "Software EQ 15-band"— ISO 2/3-octave 15-band running on ESP32 CPU
-#                         (frequencies: 25 40 63 100 160 250 400 630 1k
-#                          1.6k 2.5k 4k 6.3k 10k 16kHz, Q=1.4)
-#   "Hardware DSP"       — TAS5805M on-chip EQ activated, SW EQ disabled
+# SOFTWARE EQ:
+#   One on/off switch (id: sw_eq_switch) controls the 15-band ISO software EQ
+#   running on the ESP32 CPU (25 40 63 100 160 250 400 630 1k 1.6k 2.5k 4k
+#   6.3k 10k 16kHz, Q=1.4). State is saved to NVS.
+#
+# HARDWARE EQ (TAS5805M):
+#   Controlled separately via the chip's own enable_eq switch in your device
+#   YAML. The two EQ paths are fully independent — manage them individually.
 #
 # EQ PRESET — only applies to Software EQ mode.
 # EQ BAND SLIDERS — 15 sliders (band 0..14), ISO 2/3-octave.
@@ -35,32 +34,39 @@ globals:
     restore_value: false
     initial_value: 'false'
 
-select:
-  # ── DSP Mode ─────────────────────────────────────────────────────────────
-  - platform: template
-    name: "${friendly_name} DSP Mode"
-    id: dsp_mode
-    options:
-      - "Off"
-      - "Software EQ 15-band"
-      - "Hardware DSP"
-    initial_option: "Off"
-    restore_value: true
-    set_action:
-      - lambda: |-
-          if (x == "Software EQ 15-band") {
-            id(hw_eq_switch).turn_off();
-            eq_set_mode(15);
-            enable_eq(true);
-          } else if (x == "Hardware DSP") {
-            enable_eq(false);
-            id(hw_eq_switch).turn_on();
-          } else {
-            // "Off": disable both
-            enable_eq(false);
-            id(hw_eq_switch).turn_off();
-          }
+esphome:
+  on_boot:
+    # ESPHome does NOT call turn_on/off callbacks when restoring a switch.
+    # Re-apply the saved SW EQ state at boot so the C++ eq.enabled flag
+    # matches the restored switch state.
+    # Priority 200.0 runs after all components are set up but before the
+    # main loop.
+    - priority: 200.0
+      then:
+        - lambda: |-
+            if (id(sw_eq_switch).state) {
+              eq_set_mode(15);
+              enable_eq(true);
+            } else {
+              enable_eq(false);
+            }
 
+switch:
+  # ── Software EQ on/off ────────────────────────────────────────────────────
+  - platform: template
+    name: "${friendly_name} Software EQ"
+    id: sw_eq_switch
+    restore_mode: RESTORE_DEFAULT_OFF
+    optimistic: true
+    turn_on_action:
+      - lambda: |-
+          eq_set_mode(15);
+          enable_eq(true);
+    turn_off_action:
+      - lambda: |-
+          enable_eq(false);
+
+select:
   # ── EQ Preset (Software EQ only) ─────────────────────────────────────────
   - platform: template
     name: "${friendly_name} EQ Preset"
@@ -103,12 +109,9 @@ select:
             float v[] = {-10,-8,-6,-4,-2,0,1,2,2,2,3,3,4,4,5};
             memcpy(g, v, sizeof(v));
           } else {
-            // "Custom" — do NOT change DSP mode. If SW EQ is active, just
-            // make sure EQ processing is enabled. If HW DSP or Off is active,
-            // leave them alone; sliders only store gains for when SW EQ is next
-            // selected. This prevents a manual slider move from accidentally
-            // switching the DSP mode away from Hardware DSP.
-            if (id(dsp_mode).state == "Software EQ 15-band") enable_eq(true);
+            // "Custom" — do nothing except ensure EQ processing is on
+            // if SW EQ switch is active.
+            if (id(sw_eq_switch).state) enable_eq(true);
             return;
           }
 
@@ -134,14 +137,12 @@ select:
 
           id(eq_preset_writing) = false;
 
-          // Presets only adjust slider values — they never change the DSP mode.
-          // If SW EQ is active, apply the new gains immediately.
-          // If HW DSP or Off is active, the slider values are stored in NVS and
-          // will take effect the next time SW EQ is selected.
+          // Presets only adjust slider values.
+          // If SW EQ switch is on, apply the bypass/enable immediately.
           if (bypass) {
-            if (id(dsp_mode).state == "Software EQ 15-band") enable_eq(false);
+            if (id(sw_eq_switch).state) enable_eq(false);
           } else {
-            if (id(dsp_mode).state == "Software EQ 15-band") enable_eq(true);
+            if (id(sw_eq_switch).state) enable_eq(true);
           }
 
 number:
