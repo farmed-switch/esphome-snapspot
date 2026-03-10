@@ -103,7 +103,11 @@ select:
             float v[] = {-10,-8,-6,-4,-2,0,1,2,2,2,3,3,4,4,5};
             memcpy(g, v, sizeof(v));
           } else {
-            // "Custom" — don't touch sliders, just ensure EQ is on
+            // "Custom" — do NOT change DSP mode. If SW EQ is active, just
+            // make sure EQ processing is enabled. If HW DSP or Off is active,
+            // leave them alone; sliders only store gains for when SW EQ is next
+            // selected. This prevents a manual slider move from accidentally
+            // switching the DSP mode away from Hardware DSP.
             if (id(dsp_mode).state == "Software EQ 15-band") enable_eq(true);
             return;
           }
@@ -130,22 +134,14 @@ select:
 
           id(eq_preset_writing) = false;
 
-          // Auto-switch DSP Mode:
-          // - Any non-bypass preset → activate Software EQ if not already active
-          // - "Flat (Bypass)" → turn EQ off
+          // Presets only adjust slider values — they never change the DSP mode.
+          // If SW EQ is active, apply the new gains immediately.
+          // If HW DSP or Off is active, the slider values are stored in NVS and
+          // will take effect the next time SW EQ is selected.
           if (bypass) {
-            // Turn off software EQ (leave DSP mode as-is, just disable processing)
-            enable_eq(false);
-            if (id(dsp_mode).state == "Software EQ 15-band") {
-              id(dsp_mode).make_call().set_option("Off").perform();
-            }
+            if (id(dsp_mode).state == "Software EQ 15-band") enable_eq(false);
           } else {
-            // Activate software EQ regardless of current DSP mode
-            if (id(dsp_mode).state != "Software EQ 15-band") {
-              id(dsp_mode).make_call().set_option("Software EQ 15-band").perform();
-            } else {
-              enable_eq(true);
-            }
+            if (id(dsp_mode).state == "Software EQ 15-band") enable_eq(true);
           }
 
 number:
