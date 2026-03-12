@@ -1,0 +1,11 @@
+idf_component_register(
+    SRCS
+        "shared_audio_eq.cpp"
+        "SharedAudioEQ.cpp"
+    INCLUDE_DIRS
+        "."
+    REQUIRES
+        esp_log
+        freertos
+        esp-dsp
+)

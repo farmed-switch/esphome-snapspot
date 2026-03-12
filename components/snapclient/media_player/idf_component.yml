@@ -1,0 +1,10 @@
+## IDF Component Manager manifest for published snapclient component.
+## Declares espressif/esp-dsp as a dependency so that dsp_processor symbols
+## (dsps_biquad_*, etc.) are resolved when the prebuilt libsnapclient.a is linked.
+## This file is copied to components/snapclient/media_player/idf_component.yml
+## during the publish step in build-and-publish.yml.
+dependencies:
+  espressif/esp-dsp:
+    version: "*"
+  idf:
+    version: ">=5.0"
