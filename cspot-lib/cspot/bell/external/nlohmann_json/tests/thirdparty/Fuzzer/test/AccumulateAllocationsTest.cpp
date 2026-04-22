@@ -1,0 +1,15 @@
+
+
+#include <cstdint>
+#include <cstddef>
+
+const int kAllocatedPointersSize = 10000;
+int NumAllocatedPointers = 0;
+int *AllocatedPointers[kAllocatedPointersSize];
+
+extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
+  if (NumAllocatedPointers < kAllocatedPointersSize)
+    AllocatedPointers[NumAllocatedPointers++] = new int;
+  return 0;
+}
+

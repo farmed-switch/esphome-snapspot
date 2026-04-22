@@ -1,0 +1,70 @@
+
+
+#include    "config.h"
+#ifdef AAC_PLUS
+
+#include "pv_pow2.h"
+#include "fxp_mul32.h"
+
+#define POW_2_TABLE_LENGTH          6
+#define POW_2_TABLE_LENGTH_m_2      (POW_2_TABLE_LENGTH - 2)
+
+#define R_SHIFT     29
+#define Q_fmt(x)   (Int32)(x*((Int32)1<<R_SHIFT) + (x>=0?0.5F:-0.5F))
+
+#define Q27fmt(x)   (Int32)(x*((Int32)1<<27) + (x>=0?0.5F:-0.5F))
+
+const Int32 pow2_table[6] =
+{
+    Q_fmt(0.00224510927441F),   Q_fmt(0.00777943379416F),
+    Q_fmt(0.05737929218747F),   Q_fmt(0.23918017179889F),
+    Q_fmt(0.69345251849351F),   Q_fmt(0.99996347120248F)
+};
+
+Int32 pv_pow2(Int32 z)
+{
+    const Int32 *pt_table = pow2_table;
+    Int32 multiplier = 0;
+    Int32 shift_factor;
+    Int32 i;
+    Int32 v_q;
+    Int32 y;
+
+    if (z > Q27fmt(1.0f))
+    {
+        v_q = z - (z & 0xF8000000);
+        shift_factor =   z >> 27;
+    }
+    else
+    {
+        v_q = z;
+        shift_factor = 0;
+    }
+
+    if (v_q < Q27fmt(0.5f))
+    {
+        v_q += Q27fmt(0.5f);
+        multiplier = Q_fmt(0.70710678118655F);
+    }
+
+    v_q = v_q << 2;
+
+    y  = fxp_mul32_Q29(*(pt_table++), v_q);
+
+    for (i = POW_2_TABLE_LENGTH_m_2; i != 0; i--)
+    {
+        y += *(pt_table++);
+        y  = fxp_mul32_Q29(y, v_q);
+    }
+    y += *(pt_table++);
+
+    if (multiplier)
+    {
+        y = fxp_mul32_Q29(y, multiplier);
+    }
+
+    return (y >> (4 - shift_factor));
+
+}
+
+#endif

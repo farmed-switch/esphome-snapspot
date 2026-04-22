@@ -1,0 +1,55 @@
+SnapSpot - ESPHome media player integration
+Copyright (C) 2024-2026 farmed-switch
+
+This project is licensed under the GNU General Public License v3.0.
+See the LICENSE file for the full license text.
+
+This project includes and builds upon the following open-source works:
+
+================================================================================
+
+cspot - Spotify Connect protocol implementation
+Copyright (C) 2020 feelfreelinux & alufers
+License: GPL-3.0-or-later
+Source: https://github.com/feelfreelinux/cspot
+
+================================================================================
+
+snapclient for ESP32 (lightsnapcast)
+Copyright (C) CarlosDerSeher
+License: GPL-3.0
+Source: https://github.com/CarlosDerSeher/snapclient
+Components used: lightsnapcast, libbuffer, libmedian, opus, flac,
+                 dsp_processor, timefilter
+
+Based on earlier work by:
+  - luar123 (https://github.com/luar123/snapclient)
+  - jorgenkraghjakobsen
+  - bridadan
+
+================================================================================
+
+Sub-component licenses (bundled via cspot/bell):
+
+  opus - BSD-3-Clause
+  tremor (Vorbis) - BSD-3-Clause
+  alac - Apache-2.0
+  cJSON - MIT, Copyright (c) 2009-2017 Dave Gamble and cJSON contributors
+  fmt - MIT with linking exception
+  nlohmann_json - MIT, Copyright (c) 2013-2022 Niels Lohmann
+  nanopb - zlib
+
+Sub-component licenses (bundled via CarlosDerSeher/snapclient):
+
+  libmedian - MIT, Copyright (c) 2018 Alexandru Bogdan (accabog)
+  timefilter - Apache-2.0
+
+================================================================================
+
+ESPHome framework
+License: MIT
+Source: https://github.com/esphome/esphome
+
+esp-dsp (Espressif DSP Library)
+License: Apache-2.0
+Source: https://github.com/espressif/esp-dsp
