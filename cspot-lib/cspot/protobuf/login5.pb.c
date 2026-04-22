@@ -1,0 +1,17 @@
+
+
+#include "protobuf/login5.pb.h"
+#if PB_PROTO_HEADER_VERSION != 40
+#error Regenerate this file with the current version of nanopb generator.
+#endif
+
+PB_BIND(StoredCredential, StoredCredential, AUTO)
+
+PB_BIND(ClientInfo, ClientInfo, AUTO)
+
+PB_BIND(LoginRequest, LoginRequest, 2)
+
+PB_BIND(LoginOk, LoginOk, AUTO)
+
+PB_BIND(LoginResponse, LoginResponse, AUTO)
+

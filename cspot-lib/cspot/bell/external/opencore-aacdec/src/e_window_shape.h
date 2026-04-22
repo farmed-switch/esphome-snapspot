@@ -1,0 +1,15 @@
+
+
+#ifndef E_WINDOW_SHAPE_H
+#define E_WINDOW_SHAPE_H
+
+typedef enum
+{
+    SINE_WINDOW = 0,
+    KAISER_BESSEL_WINDOW,
+    NUM_WINDOW_SHAPES,
+    ENSURE_WINDOW_SHAPE_INT_SIZE = 0x7FFFFF
+}
+WINDOW_SHAPE;
+
+#endif

@@ -1,0 +1,28 @@
+
+
+#pragma once
+
+#include "doctest.h"
+
+#include <iostream>
+#include <regex>
+#include <string>
+
+#define STRINGIZE_EX(x) #x
+#define STRINGIZE(x) STRINGIZE_EX(x)
+
+template<typename T>
+std::string namespace_name(std::string ns, T*   = nullptr)
+{
+#if DOCTEST_MSVC && !DOCTEST_CLANG
+    ns = __FUNCSIG__;
+#elif !DOCTEST_CLANG
+    ns = __PRETTY_FUNCTION__;
+#endif
+    std::smatch m;
+
+    CAPTURE(ns);
+    CHECK(std::regex_search(ns, m, std::regex("nlohmann(::[a-zA-Z0-9_]+)*::basic_json")));
+
+    return m.str();
+}

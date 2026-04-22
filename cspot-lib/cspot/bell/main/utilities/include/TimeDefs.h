@@ -1,0 +1,6 @@
+
+
+#ifndef EUPHONIUMCLI_TIMEDEFS_H
+#define EUPHONIUMCLI_TIMEDEFS_H
+
+#endif
